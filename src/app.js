@@ -15,8 +15,9 @@ export const app = express();
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use(
   cors({
-    // Single browser-facing origin — the admin app lives under a path on it (see env.urls.adminPath).
-    origin: env.urls.customerApp,
+    // Browser-facing origins — the admin app lives under a path on the customer app (see env.urls.adminPath).
+    // localhost:5173 is allowed so the frontend can be run locally against this backend during development.
+    origin: [env.urls.customerApp, 'http://localhost:5173'],
     credentials: true,
   }),
 );
