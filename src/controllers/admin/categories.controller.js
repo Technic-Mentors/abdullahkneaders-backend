@@ -1,6 +1,6 @@
 import { asyncHandler } from '../../utils/asyncHandler.js';
 import * as categoryService from '../../services/category.service.js';
-import { publicPathFor } from '../../config/upload.js';
+import { publicPathFor, renameUploadedFile } from '../../config/upload.js';
 import { AppError } from '../../utils/AppError.js';
 
 export const list = asyncHandler(async (req, res) => {
@@ -30,7 +30,9 @@ export const remove = asyncHandler(async (req, res) => {
 
 export const uploadBanner = asyncHandler(async (req, res) => {
   if (!req.file) throw new AppError('No image file was uploaded.', 400);
-  const imagePath = publicPathFor('categories', req.file.filename);
-  const category = await categoryService.setCategoryBanner(Number(req.params.id), imagePath);
+  const categoryId = Number(req.params.id);
+  const filename = renameUploadedFile('categories', req.file);
+  const imagePath = publicPathFor('categories', filename);
+  const category = await categoryService.setCategoryBanner(categoryId, imagePath);
   res.json({ success: true, data: category, message: 'Banner uploaded.' });
 });

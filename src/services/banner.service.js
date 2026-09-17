@@ -1,5 +1,6 @@
 import { AppError } from '../utils/AppError.js';
 import { buildPaginationMeta } from '../utils/pagination.js';
+import { deleteUploadedFile } from '../config/upload.js';
 import * as bannersDb from '../db/queries/banners.queries.js';
 
 export async function listActiveByPlacement(placement) {
@@ -32,4 +33,5 @@ export async function deleteBanner(id) {
   const banner = await bannersDb.findBannerById(id);
   if (!banner) throw new AppError('Banner not found.', 404);
   await bannersDb.deleteBanner(id);
+  deleteUploadedFile(banner.image_path);
 }

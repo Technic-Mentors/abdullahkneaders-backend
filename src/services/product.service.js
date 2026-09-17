@@ -2,6 +2,7 @@ import { AppError } from '../utils/AppError.js';
 import { slugify } from '../utils/slugify.js';
 import { pool, withTransaction } from '../config/db.js';
 import { buildPaginationMeta } from '../utils/pagination.js';
+import { deleteUploadedFile } from '../config/upload.js';
 import * as productsDb from '../db/queries/products.queries.js';
 import * as variantsDb from '../db/queries/productVariants.queries.js';
 import * as imagesDb from '../db/queries/productImages.queries.js';
@@ -135,7 +136,7 @@ export async function updateProduct(id, data) {
 }
 
 export async function deleteProduct(id) {
-  await getAdminProductById(id);
+  const product = await getAdminProductById(id);
   try {
     await productsDb.deleteProduct(id);
   } catch (error) {
@@ -143,6 +144,9 @@ export async function deleteProduct(id) {
       throw new AppError('Cannot delete a product that has existing orders. Deactivate it instead.', 409);
     }
     throw error;
+  }
+  for (const image of product.images) {
+    deleteUploadedFile(image.image_path);
   }
 }
 
@@ -183,6 +187,7 @@ export async function removeImage(productId, imageId) {
   const image = await imagesDb.findImageById(imageId);
   if (!image || image.product_id !== productId) throw new AppError('Image not found.', 404);
   await imagesDb.deleteImage(imageId);
+  deleteUploadedFile(image.image_path);
 }
 
 export async function makeImagePrimary(productId, imageId) {

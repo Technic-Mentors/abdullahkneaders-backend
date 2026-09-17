@@ -4,6 +4,7 @@ import { signJwt } from '../utils/jwt.js';
 import { generateOpaqueToken, hashToken } from '../utils/tokenHash.js';
 import { COOKIE_NAMES, setAccessCookie, setRefreshCookie, clearAuthCookies } from '../utils/cookies.js';
 import { env } from '../config/env.js';
+import { deleteUploadedFile } from '../config/upload.js';
 import {
   findAdminByEmail,
   findAdminById,
@@ -122,6 +123,8 @@ export async function updateProfile(adminId, { name, email }) {
 }
 
 export async function updateAvatar(adminId, avatarPath) {
+  const existing = await findAdminById(adminId);
   await updateAdminAvatar(adminId, avatarPath);
+  deleteUploadedFile(existing.avatar);
   return findAdminById(adminId);
 }

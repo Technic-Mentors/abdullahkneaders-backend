@@ -1,6 +1,6 @@
 import { asyncHandler } from '../../utils/asyncHandler.js';
 import { AppError } from '../../utils/AppError.js';
-import { publicPathFor } from '../../config/upload.js';
+import { publicPathFor, renameUploadedFile } from '../../config/upload.js';
 import * as blogService from '../../services/blog.service.js';
 
 export const listCategories = asyncHandler(async (req, res) => {
@@ -41,7 +41,9 @@ export const remove = asyncHandler(async (req, res) => {
 
 export const uploadFeaturedImage = asyncHandler(async (req, res) => {
   if (!req.file) throw new AppError('No image file was uploaded.', 400);
-  const imagePath = publicPathFor('blog', req.file.filename);
-  const post = await blogService.setFeaturedImage(Number(req.params.id), imagePath);
+  const postId = Number(req.params.id);
+  const filename = renameUploadedFile('blog', req.file);
+  const imagePath = publicPathFor('blog', filename);
+  const post = await blogService.setFeaturedImage(postId, imagePath);
   res.json({ success: true, data: post, message: 'Featured image uploaded.' });
 });

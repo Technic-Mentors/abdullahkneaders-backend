@@ -1,7 +1,7 @@
 import { asyncHandler } from '../../utils/asyncHandler.js';
 import { AppError } from '../../utils/AppError.js';
 import { findAdminById } from '../../db/queries/admins.queries.js';
-import { publicPathFor } from '../../config/upload.js';
+import { publicPathFor, renameUploadedFile } from '../../config/upload.js';
 import * as authService from '../../services/adminAuth.service.js';
 
 export const login = asyncHandler(async (req, res) => {
@@ -46,7 +46,8 @@ export const updateProfile = asyncHandler(async (req, res) => {
 
 export const uploadAvatar = asyncHandler(async (req, res) => {
   if (!req.file) throw new AppError('No image file was uploaded.', 400);
-  const avatarPath = publicPathFor('avatars', req.file.filename);
+  const filename = renameUploadedFile('avatars', req.file);
+  const avatarPath = publicPathFor('avatars', filename);
   const admin = await authService.updateAvatar(req.admin.id, avatarPath);
   res.json({ success: true, data: admin, message: 'Avatar updated.' });
 });

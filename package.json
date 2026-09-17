@@ -1,8 +1,8 @@
 {
-  "name": "libas-e-haram-backend",
+  "name": "ma-universal-backend",
   "version": "1.0.0",
   "private": true,
-  "description": "Backend API for Libas-e-Haram e-commerce platform",
+  "description": "Backend API for MA Universal e-commerce platform",
   "type": "module",
   "main": "src/server.js",
   "scripts": {

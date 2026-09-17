@@ -1,8 +1,9 @@
 import bcrypt from 'bcrypt';
 import { pool } from '../../config/db.js';
+import { BRAND_NAME } from '../../config/brand.js';
 
 async function seedAdmin() {
-  const email = 'admin@libaseharam.com';
+  const email = 'admin@mauniversal.com';
   const [existing] = await pool.query('SELECT id FROM admins WHERE email = ?', [email]);
   if (existing.length > 0) {
     console.log('Admin already exists, skipping.');
@@ -20,9 +21,10 @@ async function seedAdmin() {
 
 async function seedCategories() {
   const categories = [
-    { name: 'Men', slug: 'men', sortOrder: 1 },
-    { name: 'Women', slug: 'women', sortOrder: 2 },
-    { name: 'Kids', slug: 'kids', sortOrder: 3 },
+    { name: 'Championship Belts', slug: 'championship-belts', sortOrder: 1 },
+    { name: 'Weight Lifting Belts', slug: 'weight-lifting-belts', sortOrder: 2 },
+    { name: 'Equestrian Gear', slug: 'equestrian-gear', sortOrder: 3 },
+    { name: 'Buckles & Swivels', slug: 'buckles-swivels', sortOrder: 4 },
   ];
 
   for (const category of categories) {
@@ -42,47 +44,61 @@ async function seedSampleProducts() {
 
   const products = [
     {
-      categorySlug: 'men',
-      name: 'Classic Cotton Jubbah',
-      slug: 'classic-cotton-jubbah',
-      description: 'A breathable, comfortable cotton jubbah suited for daily prayer wear and travel.',
-      fabric: 'Cotton',
-      basePrice: 3200,
-      compareAtPrice: null,
+      categorySlug: 'championship-belts',
+      name: 'Elite Championship Belt',
+      slug: 'elite-championship-belt',
+      description: 'A premium leather championship belt with a die-struck center plate, built for title bouts and display.',
+      fabric: 'Genuine Leather',
+      basePrice: 150,
+      compareAtPrice: 170,
       isFeatured: 1,
       variants: [
-        { size: 'M', color: 'White', sku: 'JUB-M-WHT', stockQuantity: 20 },
-        { size: 'L', color: 'White', sku: 'JUB-L-WHT', stockQuantity: 18 },
-        { size: 'XL', color: 'White', sku: 'JUB-XL-WHT', stockQuantity: 10 },
+        { size: '32in', color: 'Black', sku: 'CHB-32-BLK', stockQuantity: 8 },
+        { size: '34in', color: 'Black', sku: 'CHB-34-BLK', stockQuantity: 10 },
+        { size: '36in', color: 'Brown', sku: 'CHB-36-BRN', stockQuantity: 6 },
       ],
     },
     {
-      categorySlug: 'women',
-      name: 'Elegant Umrah Abaya',
-      slug: 'elegant-umrah-abaya',
-      description: 'A flowing, modest abaya designed for comfort and elegance during Umrah.',
-      fabric: 'Nida',
-      basePrice: 4500,
-      compareAtPrice: 5200,
-      isFeatured: 1,
-      variants: [
-        { size: 'S', color: 'Black', sku: 'ABY-S-BLK', stockQuantity: 15 },
-        { size: 'M', color: 'Black', sku: 'ABY-M-BLK', stockQuantity: 22 },
-        { size: 'L', color: 'Beige', sku: 'ABY-L-BEG', stockQuantity: 12 },
-      ],
-    },
-    {
-      categorySlug: 'kids',
-      name: "Boys Prayer Set",
-      slug: 'boys-prayer-set',
-      description: 'A comfortable two-piece prayer set for boys, perfect for Hajj and Umrah travel.',
-      fabric: 'Cotton Blend',
-      basePrice: 1800,
+      categorySlug: 'weight-lifting-belts',
+      name: 'Powerlifting Training Belt',
+      slug: 'powerlifting-training-belt',
+      description: 'A rigid, single-prong leather belt for squat/deadlift bracing, built to keep its shape under load.',
+      fabric: 'Suede Leather',
+      basePrice: 65,
       compareAtPrice: null,
       isFeatured: 1,
       variants: [
-        { size: '4-6y', color: 'White', sku: 'KID-46-WHT', stockQuantity: 14 },
-        { size: '7-9y', color: 'White', sku: 'KID-79-WHT', stockQuantity: 11 },
+        { size: 'S', color: 'Black', sku: 'WLB-S-BLK', stockQuantity: 15 },
+        { size: 'M', color: 'Black', sku: 'WLB-M-BLK', stockQuantity: 22 },
+        { size: 'L', color: 'Black', sku: 'WLB-L-BLK', stockQuantity: 18 },
+      ],
+    },
+    {
+      categorySlug: 'equestrian-gear',
+      name: 'All-Purpose Saddle Pad',
+      slug: 'all-purpose-saddle-pad',
+      description: 'A cushioned, breathable saddle pad for everyday riding and schooling sessions.',
+      fabric: 'Cotton/Fleece',
+      basePrice: 55,
+      compareAtPrice: null,
+      isFeatured: 1,
+      variants: [
+        { size: 'Standard', color: 'Navy', sku: 'EQG-STD-NVY', stockQuantity: 14 },
+        { size: 'Standard', color: 'Black', sku: 'EQG-STD-BLK', stockQuantity: 11 },
+      ],
+    },
+    {
+      categorySlug: 'buckles-swivels',
+      name: 'Solid Brass Belt Buckle',
+      slug: 'solid-brass-belt-buckle',
+      description: 'A heavyweight solid brass buckle, interchangeable with any standard belt strap.',
+      fabric: 'Solid Brass',
+      basePrice: 25,
+      compareAtPrice: null,
+      isFeatured: 0,
+      variants: [
+        { size: 'One Size', color: 'Gold', sku: 'BKL-OS-GLD', stockQuantity: 25 },
+        { size: 'One Size', color: 'Nickel', sku: 'BKL-OS-NKL', stockQuantity: 20 },
       ],
     },
   ];
@@ -113,12 +129,13 @@ async function seedSampleProducts() {
 
 async function seedSettings() {
   const defaults = {
-    store_name: 'Libas-e-Haram',
-    store_email: 'info@libaseharam.com',
-    store_phone: '+92 322 1527802',
-    store_address: 'Gujranwala, Punjab, Pakistan',
-    default_shipping_rate: '200',
-    free_shipping_threshold: '5000',
+    store_name: BRAND_NAME,
+    // TODO: replace with MA Universal's real contact info once available.
+    store_email: 'info@mauniversal.com',
+    store_phone: '+00 000 0000000',
+    store_address: 'Address TBD',
+    default_shipping_rate: '8',
+    free_shipping_threshold: '75',
     return_window_days: '7',
     return_policy_text: 'Items can be returned within 7 days of delivery if unused and in original packaging. Contact us to arrange a return.',
   };

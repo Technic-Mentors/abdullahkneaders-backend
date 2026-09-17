@@ -73,7 +73,7 @@ export async function previewDiscount({ code, customerId, subtotal, itemsByCateg
     throw new AppError('This coupon does not apply to any items in your cart.', 400);
   }
   if (coupon.min_order_value != null && eligibleSubtotal < Number(coupon.min_order_value)) {
-    throw new AppError(`This coupon requires a minimum order of Rs. ${coupon.min_order_value}.`, 400);
+    throw new AppError(`This coupon requires a minimum order of $${coupon.min_order_value}.`, 400);
   }
 
   let discountAmount =

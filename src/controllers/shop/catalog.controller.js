@@ -22,7 +22,8 @@ export const listProducts = asyncHandler(async (req, res) => {
 });
 
 export const listFeaturedProducts = asyncHandler(async (req, res) => {
-  const products = await productService.listFeaturedProducts();
+  const limit = req.query.limit ? Number(req.query.limit) : undefined;
+  const products = await productService.listFeaturedProducts(limit);
   res.json({ success: true, data: products });
 });
 

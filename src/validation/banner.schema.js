@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const bannerBodySchema = z.object({
   body: z.object({
-    title: z.string().trim().min(1).max(150),
+    title: z.string().trim().max(150).optional(),
     linkUrl: z.string().trim().max(255).optional().nullable(),
     placement: z.string().trim().max(50).optional(),
     sortOrder: z.coerce.number().int().optional(),

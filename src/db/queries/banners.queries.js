@@ -35,7 +35,7 @@ export async function createBanner(data) {
     `INSERT INTO banners (title, image_path, link_url, placement, sort_order, is_active, starts_at, ends_at)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
     [
-      data.title,
+      data.title || '',
       data.imagePath,
       data.linkUrl || null,
       data.placement || 'hero',
@@ -54,7 +54,7 @@ export async function updateBanner(id, data) {
        title = ?, link_url = ?, placement = ?, sort_order = ?, is_active = ?, starts_at = ?, ends_at = ?
      WHERE id = ?`,
     [
-      data.title,
+      data.title || '',
       data.linkUrl || null,
       data.placement || 'hero',
       data.sortOrder ?? 0,

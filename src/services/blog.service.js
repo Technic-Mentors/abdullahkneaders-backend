@@ -2,6 +2,7 @@ import { AppError } from '../utils/AppError.js';
 import { slugify } from '../utils/slugify.js';
 import { pool } from '../config/db.js';
 import { buildPaginationMeta } from '../utils/pagination.js';
+import { deleteUploadedFile } from '../config/upload.js';
 import * as blogDb from '../db/queries/blog.queries.js';
 
 async function ensureUniqueSlug(title, excludeId = null) {
@@ -98,11 +99,13 @@ export async function deletePost(id) {
   const existing = await blogDb.findPostById(id);
   if (!existing) throw new AppError('Post not found.', 404);
   await blogDb.deletePost(id);
+  deleteUploadedFile(existing.featured_image);
 }
 
 export async function setFeaturedImage(id, imagePath) {
   const existing = await blogDb.findPostById(id);
   if (!existing) throw new AppError('Post not found.', 404);
   await blogDb.updateFeaturedImage(id, imagePath);
+  deleteUploadedFile(existing.featured_image);
   return getAdminPost(id);
 }

@@ -152,7 +152,7 @@ export async function placeOrder(customerId, { addressId, shipping, couponCode }
     notificationsDb.createNotification({
       type: 'new_order',
       title: 'New order received',
-      message: `Order ${order.order_number} — Rs. ${order.total}`,
+      message: `Order ${order.order_number} — $${order.total}`,
       link: `/admin/orders/${order.id}`,
     }),
   ]);
