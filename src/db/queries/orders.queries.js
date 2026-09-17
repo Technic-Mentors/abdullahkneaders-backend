@@ -40,6 +40,14 @@ export async function findOrderByIdForCustomer(id, customerId) {
   return rows[0] || null;
 }
 
+export async function findOrderByNumberAndPhone(orderNumber, phone) {
+  const [rows] = await pool.query(
+    'SELECT * FROM orders WHERE order_number = ? AND shipping_phone = ? LIMIT 1',
+    [orderNumber, phone],
+  );
+  return rows[0] || null;
+}
+
 export async function listOrdersForCustomer(customerId) {
   const [rows] = await pool.query(
     'SELECT * FROM orders WHERE customer_id = ? ORDER BY created_at DESC',

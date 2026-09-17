@@ -27,6 +27,11 @@ export const me = asyncHandler(async (req, res) => {
   res.json({ success: true, data: customer });
 });
 
+export const updateProfile = asyncHandler(async (req, res) => {
+  const customer = await authService.updateProfile(req.customer.id, req.body);
+  res.json({ success: true, data: customer, message: 'Profile updated.' });
+});
+
 export const forgotPassword = asyncHandler(async (req, res) => {
   await authService.forgotPassword(req.body.email);
   res.json({ success: true, message: 'If that email exists, a reset link has been sent.' });

@@ -6,6 +6,7 @@ import { authRateLimiter } from '../../middleware/rateLimiter.js';
 import {
   registerSchema,
   loginSchema,
+  updateProfileSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
   verifyEmailSchema,
@@ -18,6 +19,7 @@ authRouter.post('/login', authRateLimiter, validate(loginSchema), authController
 authRouter.post('/logout', authController.logout);
 authRouter.post('/refresh', authController.refresh);
 authRouter.get('/me', requireCustomer, authController.me);
+authRouter.patch('/me', requireCustomer, validate(updateProfileSchema), authController.updateProfile);
 authRouter.post(
   '/forgot-password',
   authRateLimiter,

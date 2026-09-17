@@ -21,6 +21,11 @@ export const listProducts = asyncHandler(async (req, res) => {
   res.json({ success: true, data: rows, meta });
 });
 
+export const getPriceRange = asyncHandler(async (req, res) => {
+  const range = await productService.getPublicPriceRange(req.query.category);
+  res.json({ success: true, data: range });
+});
+
 export const listFeaturedProducts = asyncHandler(async (req, res) => {
   const limit = req.query.limit ? Number(req.query.limit) : undefined;
   const products = await productService.listFeaturedProducts(limit);

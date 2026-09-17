@@ -21,6 +21,10 @@ export async function createCustomer({ name, email, phone, passwordHash }) {
   return result.insertId;
 }
 
+export async function updateCustomerProfile(id, { name, phone }) {
+  await pool.query('UPDATE customers SET name = ?, phone = ? WHERE id = ?', [name, phone, id]);
+}
+
 export async function updateCustomerPassword(id, passwordHash) {
   await pool.query('UPDATE customers SET password_hash = ? WHERE id = ?', [passwordHash, id]);
 }

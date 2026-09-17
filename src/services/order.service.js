@@ -160,6 +160,14 @@ export async function placeOrder(customerId, { addressId, shipping, couponCode }
   return buildOrderDetail(order);
 }
 
+export async function trackOrder(orderNumber, phone) {
+  const order = await ordersDb.findOrderByNumberAndPhone(orderNumber.toUpperCase(), phone);
+  if (!order) {
+    throw new AppError('No order found for that order number and phone number.', 404);
+  }
+  return buildOrderDetail(order);
+}
+
 export async function getOrderForCustomer(orderId, customerId) {
   const order = await ordersDb.findOrderByIdForCustomer(orderId, customerId);
   if (!order) throw new AppError('Order not found.', 404);

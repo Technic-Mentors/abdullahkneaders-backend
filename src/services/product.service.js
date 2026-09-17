@@ -54,6 +54,16 @@ export async function listPublicProducts({ categorySlug, search, minPrice, maxPr
   return { rows, meta: buildPaginationMeta({ page, pageSize, total }) };
 }
 
+export async function getPublicPriceRange(categorySlug) {
+  let categoryId;
+  if (categorySlug) {
+    const category = await findCategoryBySlug(categorySlug);
+    if (!category) return { minPrice: 0, maxPrice: 0 };
+    categoryId = category.id;
+  }
+  return productsDb.getPriceBounds({ categoryId, activeOnly: true });
+}
+
 export async function listFeaturedProducts(limit = 8) {
   const { rows } = await productsDb.listProducts({ activeOnly: true, featuredOnly: true, limit, offset: 0 });
   return rows;

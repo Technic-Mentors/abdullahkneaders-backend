@@ -24,3 +24,8 @@ export const cancelMyOrder = asyncHandler(async (req, res) => {
   );
   res.json({ success: true, data: order, message: 'Order cancelled.' });
 });
+
+export const trackOrder = asyncHandler(async (req, res) => {
+  const order = await orderService.trackOrder(req.body.orderNumber, req.body.phone);
+  res.json({ success: true, data: order });
+});

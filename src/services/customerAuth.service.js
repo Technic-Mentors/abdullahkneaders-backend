@@ -8,6 +8,7 @@ import {
   findCustomerByEmail,
   findCustomerById,
   createCustomer,
+  updateCustomerProfile,
   updateCustomerPassword,
   markCustomerEmailVerified,
 } from '../db/queries/customers.queries.js';
@@ -67,6 +68,11 @@ export async function register({ name, email, phone, password }, res) {
   await issueSession(res, customerId);
   await sendVerificationLink(customerId, email);
 
+  return findCustomerById(customerId);
+}
+
+export async function updateProfile(customerId, { name, phone }) {
+  await updateCustomerProfile(customerId, { name, phone });
   return findCustomerById(customerId);
 }
 

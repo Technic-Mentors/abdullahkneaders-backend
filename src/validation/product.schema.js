@@ -13,6 +13,12 @@ export const listProductsQuerySchema = z.object({
   }),
 });
 
+export const priceRangeQuerySchema = z.object({
+  query: z.object({
+    category: z.string().trim().optional(),
+  }),
+});
+
 export const productSlugParamSchema = z.object({
   params: z.object({ slug: z.string().trim().min(1) }),
 });

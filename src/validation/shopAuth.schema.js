@@ -40,6 +40,13 @@ export const resetPasswordSchema = z.object({
   }),
 });
 
+export const updateProfileSchema = z.object({
+  body: z.object({
+    name,
+    phone,
+  }),
+});
+
 export const verifyEmailSchema = z.object({
   params: z.object({ token: z.string().min(1) }),
 });

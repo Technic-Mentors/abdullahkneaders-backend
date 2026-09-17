@@ -106,6 +106,32 @@ export async function listProducts({
   return { rows, total: countRows[0].total };
 }
 
+export async function getPriceBounds({ categoryId, activeOnly = true } = {}) {
+  const conditions = [];
+  const params = [];
+  if (activeOnly) conditions.push('p.is_active = 1');
+  if (categoryId) {
+    conditions.push('p.category_id = ?');
+    params.push(categoryId);
+  }
+  const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+
+  const [rows] = await pool.query(
+    `SELECT MIN(t.price) AS min_price, MAX(t.price) AS max_price FROM (
+       SELECT COALESCE(pv.price_override, p.base_price) AS price
+       FROM products p
+       JOIN product_variants pv ON pv.product_id = p.id
+       ${whereClause}
+     ) t`,
+    params,
+  );
+
+  return {
+    minPrice: Number(rows[0]?.min_price ?? 0),
+    maxPrice: Number(rows[0]?.max_price ?? 0),
+  };
+}
+
 export async function findProductBySlug(slug, { activeOnly = true } = {}) {
   const where = activeOnly ? 'AND p.is_active = 1' : '';
   const [rows] = await pool.query(
