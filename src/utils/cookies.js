@@ -13,7 +13,8 @@ function baseOptions() {
   return {
     httpOnly: true,
     secure: env.isProduction,
-    sameSite: 'lax',
+    sameSite: env.isProduction ? 'none' : 'lax',
+    path: '/',
   };
 }
 
