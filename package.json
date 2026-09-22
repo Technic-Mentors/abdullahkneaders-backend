@@ -1,8 +1,8 @@
 {
-  "name": "ma-universal-backend",
+  "name": "abdullah-kneaders-backend",
   "version": "1.0.0",
   "private": true,
-  "description": "Backend API for MA Universal e-commerce platform",
+  "description": "Backend API for Abdullah Kneaders e-commerce platform",
   "type": "module",
   "main": "src/server.js",
   "scripts": {

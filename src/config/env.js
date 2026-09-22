@@ -18,7 +18,7 @@ export const env = {
     port: Number(process.env.DB_PORT || 3306),
     user: required('DB_USER', 'root'),
     password: process.env.DB_PASSWORD || '',
-    database: required('DB_NAME', 'ma_universal'),
+    database: required('DB_NAME', 'abdulah_kneaders'),
   },
 
   jwt: {

@@ -2,7 +2,7 @@ import { sendEmail } from '../config/mailer.js';
 import { BRAND_NAME } from '../config/brand.js';
 
 // TODO: replace with MA Universal's real address/phone once available.
-const BRAND_CONTACT_LINE = `${BRAND_NAME} · address TBD · phone TBD`;
+const BRAND_CONTACT_LINE = `${BRAND_NAME} · address Gondlanwala Rd, Gobandgarh, Gujranwala, 52250 · phone  +92-310-7777899`;
 
 function layout(bodyHtml) {
   return `

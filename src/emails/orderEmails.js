@@ -3,7 +3,7 @@ import { env } from '../config/env.js';
 import { BRAND_NAME } from '../config/brand.js';
 
 // TODO: replace with MA Universal's real address/phone once available.
-const BRAND_CONTACT_LINE = `${BRAND_NAME} · address TBD · phone TBD`;
+const BRAND_CONTACT_LINE = `${BRAND_NAME} · address Gondlanwala Rd, Gobandgarh, Gujranwala, 52250 · phone  +92-310-7777899`;
 
 function layout(bodyHtml) {
   return `
@@ -21,9 +21,9 @@ const STATUS_MESSAGES = {
   placed: 'We\'ve received your order and will call you shortly to confirm it.',
   confirmed: 'Your order has been confirmed and is being prepared.',
   packed: 'Your order has been packed and will ship soon.',
-  shipped: 'Your order is on its way!',
-  delivered: 'Your order has been delivered. Thank you for shopping with us!',
-  cancelled: 'Your order has been cancelled.',
+  delivered: 'Your order  has been delivered. Thank you for shopping with us!',
+  shipped: 'Your order is on its way! It will be delivered to you soon.',
+  cancelled: 'Your order   has been cancelled.',
   returned: 'Your return has been recorded.',
 };
 
@@ -34,8 +34,8 @@ export async function sendOrderPlacedEmail(to, order) {
     html: layout(`
       <p>Thank you for your order! Here are the details:</p>
       <p><strong>Order Number:</strong> ${order.order_number}<br/>
-         <strong>Total:</strong> $${order.total}<br/>
-         <strong>Payment:</strong> Cash on Delivery</p>
+         <strong>Total:</strong> Rs. ${order.total}<br/>
+         <strong>Payment:</strong> ${order.payment_method === 'bank_transfer' ? 'Bank Transfer' : 'Cash on Delivery'}</p>
       <p>${STATUS_MESSAGES.placed}</p>
     `),
   });
@@ -73,11 +73,12 @@ export async function sendAdminNewOrderAlert(order) {
   if (!env.mail.adminAlertEmail) return;
   await sendEmail({
     to: env.mail.adminAlertEmail,
-    subject: `New order ${order.order_number} — $${order.total}`,
+    subject: `New order ${order.order_number} — Rs. ${order.total}`,
     html: layout(`
       <p>A new order has been placed.</p>
       <p><strong>Order Number:</strong> ${order.order_number}<br/>
-         <strong>Total:</strong> $${order.total}<br/>
+         <strong>Total:</strong> Rs. ${order.total}<br/>
+         <strong>Payment:</strong> ${order.payment_method === 'bank_transfer' ? 'Bank Transfer' : 'Cash on Delivery'}<br/>
          <strong>City:</strong> ${order.shipping_city}</p>
     `),
   });

@@ -22,6 +22,7 @@ export const checkoutSchema = z.object({
       addressId: z.coerce.number().int().positive().optional(),
       shipping: inlineShipping.optional(),
       couponCode: z.string().trim().min(1).optional(),
+      paymentMethod: z.enum(['cod', 'bank_transfer']).optional().default('cod'),
     })
     .refine((data) => data.addressId || data.shipping, {
       message: 'Provide either an addressId or shipping details.',

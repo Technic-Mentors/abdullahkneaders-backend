@@ -7,6 +7,12 @@ const PUBLIC_KEYS = [
   'store_address',
   'return_window_days',
   'return_policy_text',
+  'bank_name',
+  'bank_account_holder',
+  'bank_account_number',
+  'bank_iban',
+  'bank_additional_info',
+  'payment_whatsapp_number',
 ];
 
 export async function getAllSettings() {

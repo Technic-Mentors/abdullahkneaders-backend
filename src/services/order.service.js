@@ -35,7 +35,7 @@ async function buildOrderDetail(order) {
   return { ...order, items, history };
 }
 
-export async function placeOrder(customerId, { addressId, shipping, couponCode }) {
+export async function placeOrder(customerId, { addressId, shipping, couponCode, paymentMethod }) {
   const customer = await findCustomerById(customerId);
   const cartItems = await cartDb.listCartItems(customerId);
   if (cartItems.length === 0) throw new AppError('Your cart is empty.', 400);
@@ -93,6 +93,7 @@ export async function placeOrder(customerId, { addressId, shipping, couponCode }
 
     const newOrderId = await ordersDb.insertOrderShell(connection, {
       customerId,
+      paymentMethod,
       subtotal,
       discountAmount,
       shippingCharge,
@@ -152,7 +153,7 @@ export async function placeOrder(customerId, { addressId, shipping, couponCode }
     notificationsDb.createNotification({
       type: 'new_order',
       title: 'New order received',
-      message: `Order ${order.order_number} — $${order.total}`,
+      message: `Order ${order.order_number} — Rs. ${order.total}`,
       link: `/admin/orders/${order.id}`,
     }),
   ]);
