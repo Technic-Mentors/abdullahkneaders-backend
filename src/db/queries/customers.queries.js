@@ -58,3 +58,11 @@ export async function listCustomersAdmin({ search, limit, offset }) {
 export async function setCustomerBlocked(id, isBlocked) {
   await pool.query('UPDATE customers SET is_blocked = ? WHERE id = ?', [isBlocked ? 1 : 0, id]);
 }
+
+/** Verified, non-blocked customers eligible to receive marketing/announcement emails. */
+export async function listCustomersForMarketing() {
+  const [rows] = await pool.query(
+    'SELECT id, name, email FROM customers WHERE email_verified_at IS NOT NULL AND is_blocked = 0',
+  );
+  return rows;
+}

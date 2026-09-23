@@ -146,10 +146,11 @@ export async function placeOrder(customerId, { addressId, shipping, couponCode, 
   });
 
   const order = await ordersDb.findOrderById(orderId);
+  const orderItemsForEmail = await orderItemsDb.listItemsForOrder(orderId);
 
   await Promise.all([
-    sendOrderPlacedEmail(customer.email, order),
-    sendAdminNewOrderAlert(order),
+    sendOrderPlacedEmail({ customer, order, items: orderItemsForEmail, couponCode: coupon?.code }),
+    sendAdminNewOrderAlert({ customer, order, items: orderItemsForEmail, couponCode: coupon?.code }),
     notificationsDb.createNotification({
       type: 'new_order',
       title: 'New order received',
@@ -205,7 +206,7 @@ export async function cancelOrderByCustomer(orderId, customerId, reason) {
 
   const updated = await ordersDb.findOrderById(orderId);
   await Promise.all([
-    sendOrderStatusEmail(customer.email, updated),
+    sendOrderStatusEmail(customer, updated),
     notificationsDb.createNotification({
       type: 'order_cancelled',
       title: `Order ${updated.order_number} cancelled`,
@@ -274,7 +275,7 @@ export async function updateOrderStatusAdmin(orderId, newStatus, note, adminId) 
       : `Your order status is now "${newStatus}".`;
 
   await Promise.all([
-    sendOrderStatusEmail(customer.email, updated),
+    sendOrderStatusEmail(customer, updated),
     notificationsDb.createNotification({
       type: newStatus === 'cancelled' ? 'order_cancelled' : 'order_status',
       title: `Order ${updated.order_number} update`,

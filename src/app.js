@@ -15,9 +15,13 @@ export const app = express();
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use(
   cors({
-    // Browser-facing origins — the admin app lives under a path on the customer app (see env.urls.adminPath).
-    // localhost:5174 is allowed so the frontend can be run locally against this backend during development.
-    origin: [env.urls.customerApp, 'http://localhost:5174'],
+    // Reflects whatever Origin the request sends, so any domain can call this API.
+    // Must be `true` (not `'*'`) because credentials: true requires a specific
+    // (non-wildcard) Access-Control-Allow-Origin — the cors package handles that
+    // by echoing the request's Origin header back instead of sending a literal '*'.
+    // Note: combined with SameSite=None cookies in production, this removes CORS
+    // as a CSRF boundary for the cookie-authenticated endpoints.
+    origin: true,
     credentials: true,
   }),
 );

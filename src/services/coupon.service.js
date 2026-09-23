@@ -3,6 +3,7 @@ import { buildPaginationMeta } from '../utils/pagination.js';
 import * as couponsDb from '../db/queries/coupons.queries.js';
 import * as couponUsagesDb from '../db/queries/couponUsages.queries.js';
 import * as cartDb from '../db/queries/cartItems.queries.js';
+import { sendCouponLaunchEmailToAllCustomers } from '../emails/couponEmails.js';
 
 export async function listCoupons({ page, pageSize } = {}) {
   if (!page || !pageSize) {
@@ -25,7 +26,16 @@ export async function createCoupon(data) {
   const existing = await couponsDb.findCouponByCode(code);
   if (existing) throw new AppError('A coupon with this code already exists.', 409);
   const id = await couponsDb.createCoupon({ ...data, code });
-  return couponsDb.findCouponById(id);
+  const coupon = await couponsDb.findCouponById(id);
+
+  // Fire-and-forget: don't make the admin wait on a bulk send to every customer.
+  if (coupon.is_active) {
+    sendCouponLaunchEmailToAllCustomers(coupon).catch((err) =>
+      console.error('Failed to send coupon launch emails:', err),
+    );
+  }
+
+  return coupon;
 }
 
 export async function updateCoupon(id, data) {
