@@ -7,6 +7,7 @@ import * as productsDb from '../db/queries/products.queries.js';
 import * as variantsDb from '../db/queries/productVariants.queries.js';
 import * as imagesDb from '../db/queries/productImages.queries.js';
 import { findCategoryBySlug } from '../db/queries/categories.queries.js';
+import { notifyBackInStock } from './notifyMe.service.js';
 
 async function ensureUniqueProductSlug(name, excludeId = null) {
   const base = slugify(name);
@@ -170,7 +171,14 @@ export async function updateVariant(productId, variantId, data) {
   const variant = await variantsDb.findVariantById(variantId);
   if (!variant || variant.product_id !== productId) throw new AppError('Variant not found.', 404);
   await variantsDb.updateVariant(variantId, data);
-  return variantsDb.findVariantById(variantId);
+  const updated = await variantsDb.findVariantById(variantId);
+
+  // Fire-and-forget: don't make the admin wait on emailing everyone who asked to be notified.
+  if (variant.stock_quantity <= 0 && updated.stock_quantity > 0) {
+    notifyBackInStock(variantId).catch((err) => console.error('Failed to send back-in-stock emails:', err));
+  }
+
+  return updated;
 }
 
 export async function removeVariant(productId, variantId) {

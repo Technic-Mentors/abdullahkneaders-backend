@@ -55,6 +55,16 @@ export async function incrementStock(connection, variantId, quantity) {
   );
 }
 
+export async function findVariantWithProduct(id) {
+  const [rows] = await pool.query(
+    `SELECT pv.*, p.name AS product_name, p.slug AS product_slug
+     FROM product_variants pv JOIN products p ON p.id = pv.product_id
+     WHERE pv.id = ? LIMIT 1`,
+    [id],
+  );
+  return rows[0] || null;
+}
+
 export async function listLowStockVariants(threshold = null) {
   const [rows] = await pool.query(
     `SELECT pv.*, p.name AS product_name, p.slug AS product_slug
