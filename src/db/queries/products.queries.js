@@ -17,7 +17,7 @@ const PRODUCT_LIST_SELECT = `
 `;
 
 const SORT_COLUMNS = {
-  newest: 'p.created_at DESC',
+  newest: 'p.sort_order ASC, p.created_at DESC',
   price_asc: 'min_price ASC',
   price_desc: 'min_price DESC',
   name_asc: 'p.name ASC',
@@ -163,13 +163,14 @@ export async function createProduct({
   basePrice,
   compareAtPrice,
   isFeatured,
+  sortOrder,
   metaTitle,
   metaDescription,
 }) {
   const [result] = await pool.query(
     `INSERT INTO products
-       (category_id, name, slug, description, care_instructions, fabric, base_price, compare_at_price, is_featured, meta_title, meta_description)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       (category_id, name, slug, description, care_instructions, fabric, base_price, compare_at_price, is_featured, sort_order, meta_title, meta_description)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       categoryId,
       name,
@@ -180,6 +181,7 @@ export async function createProduct({
       basePrice,
       compareAtPrice || null,
       isFeatured ? 1 : 0,
+      sortOrder ?? 0,
       metaTitle || null,
       metaDescription || null,
     ],
@@ -198,13 +200,14 @@ export async function updateProduct(id, {
   compareAtPrice,
   isActive,
   isFeatured,
+  sortOrder,
   metaTitle,
   metaDescription,
 }) {
   await pool.query(
     `UPDATE products SET
        category_id = ?, name = ?, slug = ?, description = ?, care_instructions = ?, fabric = ?,
-       base_price = ?, compare_at_price = ?, is_active = ?, is_featured = ?, meta_title = ?, meta_description = ?
+       base_price = ?, compare_at_price = ?, is_active = ?, is_featured = ?, sort_order = ?, meta_title = ?, meta_description = ?
      WHERE id = ?`,
     [
       categoryId,
@@ -217,6 +220,7 @@ export async function updateProduct(id, {
       compareAtPrice || null,
       isActive ? 1 : 0,
       isFeatured ? 1 : 0,
+      sortOrder ?? 0,
       metaTitle || null,
       metaDescription || null,
       id,

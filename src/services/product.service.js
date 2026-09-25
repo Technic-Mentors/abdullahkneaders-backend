@@ -101,8 +101,8 @@ export async function createProduct({ variants, ...productData }) {
   return withTransaction(async (connection) => {
     const [result] = await connection.query(
       `INSERT INTO products
-         (category_id, name, slug, description, care_instructions, fabric, base_price, compare_at_price, is_featured, meta_title, meta_description)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+         (category_id, name, slug, description, care_instructions, fabric, base_price, compare_at_price, is_featured, sort_order, meta_title, meta_description)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         productData.categoryId,
         productData.name,
@@ -113,6 +113,7 @@ export async function createProduct({ variants, ...productData }) {
         productData.basePrice,
         productData.compareAtPrice || null,
         productData.isFeatured ? 1 : 0,
+        productData.sortOrder ?? 0,
         productData.metaTitle || null,
         productData.metaDescription || null,
       ],
